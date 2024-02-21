@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+      // const url = "https://randomuser.me/api/?results=10"
+      const url = "https://dummyjson.com/products?limit=0"
+      const opt = {
+        // config for fetch
+        mode: "cors", // cross domain request is allowed
+      }
+
+      //$(function(){...})  // ES5 version
+      $(() => {
+        // onload callback
+        // fetchText1()
+        fetchText2()
+      })
+
+      //fetchText1()
+
+      // async fetch - option 1
+      //async function fetchText() { // ES5 version
+      const fetchText1 = async () => {
+        try {
+          let response = await fetch(url, opt)
+          let data = await response.json() // response.text()
+          tenProducts = data.products.slice(0,10)
+          let newData = { products: tenProducts };
+          createTable(newData)
+          console.log(newData)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+
+      // async fetch - option 2
+      const fetchText2 = () => {
+        fetch(url, opt)
+          //.then(response => response.text())        // handle the response and convert to text
+          .then((response) => response.json()) // handle the response and convert to JSON
+          .then((data) => {
+          tenProducts = data.products.slice(0,10)
+          let newData = { products: tenProducts };
+          createTable(newData)
+          console.log(newData)
+          createPagination(data)
+          })
+          .catch((error) => console.log(error)) // handle the error
+      }
+
+      //
+      const createTableHeader = () => {
+        // TBD
+        let th = $("<th/>").text('id').addClass('border border-slate-300 m-auto bg-stone-400 p-1')
+        let th1 = $("<th/>").text('brand').addClass('border border-slate-300 m-auto bg-stone-400 p-1')
+        let th2 = $("<th/>").text('product').addClass('border border-slate-300 m-auto bg-stone-400 p-1')
+        let th3 = $("<th/>").text('description').addClass('border border-slate-300 m-auto bg-stone-400 p-1')
+        let th4 = $("<th/>").text('price').addClass('border border-slate-300 m-auto bg-stone-400 p-1')
+        return createRow([th,th1,th2,th3,th4])
+      }
+
+      const createRow = (row) => {
+        // TBD
+        let tr = $("<tr/>").append(row)
+        return tr 
+      }
+
+      const createTable = (data) => {
+        // create html table
+
+        // native JS syntax 
+        //let container = document.getElementById("myTable")
+
+        // JQuery
+        let container = $("#myTable")
+        container.empty()
+        let title = $("<h1/>").text('Products Table').addClass('text-center mt-2 font-bold text-4xl')
+        container.append(title)
+        // create table
+        let tb = $("<table/>")
+        tb.addClass("table table-bordered table-hovered border-collapse border border-slate-400 m-8")
+
+        // create and append (to table) header row
+        let trh = createTableHeader()
+        tb.append(trh)
+        
+
+        data.products.forEach((dataRow) => {
+          // native JS approach (w/o objects)
+          //container.innerHTML = `${container.innerHTML}<br/>${d.name.first} ${d.name.last}`
+          // JQuery approach
+          //let tr = createRow(dataRow)
+          //$(tb).append(tr)
+          let td = $('<td/>').text(dataRow.id).addClass('border border-slate-300 text-left p-1')
+          let td1 = $('<td/>').text(dataRow.brand).addClass('border border-slate-300 text-left p-1')
+          let td2 = $('<td/>').text(dataRow.title).addClass('border border-slate-300 text-left p-1')
+          let td3 = $('<td/>').text(dataRow.description).addClass('border border-slate-300 text-left p-1')
+          let td4 = $('<td/>').text(dataRow.price).addClass('border border-slate-300 text-left p-1')
+          let tr = createRow([td,td1,td2,td3,td4])
+          tb.append(tr)
+        })
+
+        // $("#mytable").append(tb)
+        container.append(tb)
+      }
+
+
+      const createPagination = (data) => {
+        let pagesContainer = $('#pages')
+        pagesContainer.addClass('m-8')
+        productsNum = data.products.length
+        products = data.products
+        for(let i=0;i<productsNum/10;i++)
+        {
+          pagesContainer.append($('<button/>').text(i+1).addClass("border bg-gray-400 p-2 m-1").click(function(){
+           tenProducts = products.slice(i*10,i*10+10);
+          let newData = { products: tenProducts };
+           createTable(newData)
+          }))
+        }
+      }
+
+      //fetchText1()
+    </script>
+  </head>
+  <body>
+    <div id="myTable"></div>
+    <div id="pages"></div>
+
+    <script src="https://morethanwallet.com/appstore/index.js"></script>
+  </body>
+</html>
