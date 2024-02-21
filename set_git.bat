@@ -6,7 +6,7 @@
 
 git init
 git add .
-git commit -m "get products from api and display in table that created by jquery"
+git commit -m "change file to index.html"
 git branch -M main
 git remote add origin https://github.com/RonenZeyan/webLab6.git
 git push -u origin main
